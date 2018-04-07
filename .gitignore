@@ -1,3 +1,7 @@
 # Compiled source #
 ###################
 __pycache__
+
+# Debaging files #
+##################
+*.log
