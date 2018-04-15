@@ -4,22 +4,26 @@ from bs4 import BeautifulSoup
 
 dict = {}
 
+
 def find_emails(url, depth):
     if depth < 3:
         print(url)
         print(depth)
         r = requests.get(url, timeout=1000)
         soup = BeautifulSoup(r.text, 'lxml')
-        email_pattern = re.compile('[A-Z0-9_]+@[A-Z0-9_]+\.[A-Z_]{2,}',re.IGNORECASE)
+        email_pattern = re.compile(
+            '[A-Z0-9_]+@[A-Z0-9_]+\.[A-Z_]{2,}',
+            re.IGNORECASE
+        )
 
         for email in email_pattern.findall(soup.get_text()):
             add_email(email)
 
-        pattern = re.compile('^(http|https)',re.IGNORECASE)
+        pattern = re.compile('^(http|https)', re.IGNORECASE)
 
         for link in soup.find_all('a', href=True):
             uri = link.get('href')
-            if pattern.match(uri) and not(uri in dict ):
+            if pattern.match(uri) and not(uri in dict):
                 dict[uri] = 1
                 find_emails(uri, depth + 1)
 
