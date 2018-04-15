@@ -2,23 +2,26 @@ import requests
 import re
 from bs4 import BeautifulSoup
 
+dict = {}
 
 def find_emails(url, depth):
-    if depth < 1:
-        r = requests.get(url)
+    if depth < 3:
+        print(url)
+        print(depth)
+        r = requests.get(url, timeout=1000)
         soup = BeautifulSoup(r.text, 'lxml')
-        # запили норм регулярку
-        email_pattern = re.compile('[a-zA-Z0-9_]+@[a-zA-Z0-9_]+\.ru')
+        email_pattern = re.compile('[A-Z0-9_]+@[A-Z0-9_]+\.[A-Z_]{2,}',re.IGNORECASE)
+
         for email in email_pattern.findall(soup.get_text()):
             add_email(email)
 
-        #пока что работает не очень
-        pattern = re.compile('^(http|https)')
+        pattern = re.compile('^(http|https)',re.IGNORECASE)
+
         for link in soup.find_all('a', href=True):
-            if pattern.match(link.get('href')):
-                find_emails(link.get('href'), depth + 1)
-            else:
-                find_emails(url + link.get('href'), depth + 1)
+            uri = link.get('href')
+            if pattern.match(uri) and not(uri in dict ):
+                dict[uri] = 1
+                find_emails(uri, depth + 1)
 
 
 def add_email(email):
