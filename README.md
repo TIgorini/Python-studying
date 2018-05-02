@@ -1,2 +1,2 @@
 # Python-studying
-Python programs for university 
+Python programs for university
