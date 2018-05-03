@@ -7,9 +7,13 @@ emails = []
 
 
 def find_emails(url, depth):
-    if depth < 3:
+    if depth < 2:
         print(url)
-        r = requests.get(url, timeout=1000)
+        try:
+            r = requests.get(url, timeout=10)
+        except requests.exceptions.Timeout:
+            print('    {} does not response'.format(url))
+            return
         soup = BeautifulSoup(r.text, 'lxml')
         email_pattern = re.compile(
             '[A-Z0-9_]+@[A-Z0-9_]+\.[A-Z_]{2,}',
@@ -17,6 +21,7 @@ def find_emails(url, depth):
         )
 
         for email in email_pattern.findall(soup.get_text()):
+            print('    email found: {}'.format(email))
             add_email(email)
 
         pattern = re.compile('^(http|https)', re.IGNORECASE)
