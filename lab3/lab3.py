@@ -44,8 +44,9 @@ if __name__ == '__main__':
     ]
     vectorizer = TfidfVectorizer(stop_words=stop_words)
     result = vectorizer.fit_transform(result)
-    print(result)
+    print(result.shape)
 
+    print('Creating clusters...')
     km = KMeans()
     result = km.fit(result)
     order_centroids = km.cluster_centers_.argsort()[:, ::-1]
@@ -55,3 +56,4 @@ if __name__ == '__main__':
         for ind in order_centroids[i, :10]:
             print(' %s' % terms[ind], end='')
         print()
+    print('Done')
