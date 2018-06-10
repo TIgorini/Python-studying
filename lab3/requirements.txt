@@ -1,0 +1,5 @@
+pymongo (3.6.1)
+nltk (3.3)
+scikit-learn (0.19.1)
+numpy (1.14.4)
+scipy (1.1.0)
