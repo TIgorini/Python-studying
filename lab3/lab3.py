@@ -25,7 +25,7 @@ if __name__ == '__main__':
     posts = client.forum_inf.posts
     
     # normalization text from posts
-    print('Converting text tokens to normal form...')
+    print('Converting words to normal form...')
     texts = [post['text'] for post in posts.find().limit(1000)]
     result = []
     for text in texts:
@@ -43,17 +43,17 @@ if __name__ == '__main__':
         'anime',
     ]
     vectorizer = TfidfVectorizer(stop_words=stop_words)
-    result = vectorizer.fit_transform(result)
-    print(result.shape)
+    vectors = vectorizer.fit_transform(result)
+    print(vectors.shape)
 
     print('Creating clusters...')
-    km = KMeans()
-    result = km.fit(result)
-    order_centroids = km.cluster_centers_.argsort()[:, ::-1]
+    km = KMeans(n_clusters=4)
+    result = km.fit(vectors)
+    order_centroids = km.cluster_centers_.argsort()
     terms = vectorizer.get_feature_names()
     for i in range(result.n_clusters):
-        print("Cluster %d:" % i, end='')
-        for ind in order_centroids[i, :10]:
-            print(' %s' % terms[ind], end='')
+        print("Cluster {}:".format(i), end='')
+        for indx in order_centroids[i, :15]:
+            print(' {}'.format(terms[indx]), end='')
         print()
     print('Done')
