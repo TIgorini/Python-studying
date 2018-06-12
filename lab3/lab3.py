@@ -48,7 +48,7 @@ if __name__ == '__main__':
         'anime',
     ]
     vectorizer = TfidfVectorizer(stop_words=stop_words)
-    vectors = vectorizer.fit_transform(result)
+    vectors = vectorizer.fit_transform(all_words)
     print(vectors.shape)
 
     print('Creating clusters...')
