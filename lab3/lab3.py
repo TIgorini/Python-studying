@@ -1,11 +1,16 @@
 import nltk
 import re
+import matplotlib
 from pymongo import MongoClient
 from nltk.stem.wordnet import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
 from nltk.corpus import wordnet as wn
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.cluster import KMeans
+from wordcloud import WordCloud
+
+
+matplotlib.use('Agg')
 
 
 def penn_to_wn(tag):
@@ -27,14 +32,14 @@ if __name__ == '__main__':
     # normalization text from posts
     print('Converting words to normal form...')
     texts = [post['text'] for post in posts.find().limit(1000)]
-    result = []
+    all_words = []
     for text in texts:
         text = text.lower()
         tags = nltk.pos_tag(re.findall(r'[a-z]{2,}', text))
         for tag in tags:
             wn_tag = penn_to_wn(tag[1])
             normal = WordNetLemmatizer().lemmatize(tag[0], wn_tag)
-            result.append(normal)
+            all_words.append(normal)
 
     print('Vectorization...')
     stop_words = [
@@ -57,3 +62,8 @@ if __name__ == '__main__':
             print(' {}'.format(terms[indx]), end='')
         print()
     print('Done')
+
+    text = ' '.join(all_words)
+    wc = WordCloud(background_color="white", max_words=2000)
+    wc.generate(text)
+    wc.to_file('cloud.png')
